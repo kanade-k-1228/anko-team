@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Usage: send <target> <message>
+# Example: send dev-1 "Hello from manager"
+
+if [ $# -lt 2 ]; then
+    echo "Usage: $0 <target> <message>"
+    echo "Targets: mgr, dev-1, dev-2, dev-3, dev-4"
+    exit 1
+fi
+
+TARGET=$1
+shift
+MESSAGE="$@"
+
+# Map target names to pane IDs
+case $TARGET in
+    mgr)
+        PANE="%0"
+        ;;
+    dev-1)
+        PANE="%1"
+        ;;
+    dev-2)
+        PANE="%3"
+        ;;
+    dev-3)
+        PANE="%2"
+        ;;
+    dev-4)
+        PANE="%4"
+        ;;
+    *)
+        echo "Unknown target: $TARGET"
+        echo "Valid targets: mgr, dev-1, dev-2, dev-3, dev-4"
+        exit 1
+        ;;
+esac
+
+# Send message with automatic Enter
+tmux send-keys -t $PANE "$MESSAGE"
+sleep 0.2
+tmux send-keys -t $PANE Enter
